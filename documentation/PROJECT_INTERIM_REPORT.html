@@ -1,0 +1,856 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Interim Report - Sales Data Analyzer</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  }
+  body {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto 20px auto;
+    background: #ffffff;
+    padding: 22mm 22mm 18mm 22mm;
+    position: relative;
+    page-break-after: always;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  @media print {
+    body { background: transparent; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      height: 297mm;
+      max-height: 297mm;
+    }
+  }
+
+  /* Page Footer */
+  .page-footer {
+    position: absolute;
+    bottom: 12mm;
+    left: 22mm;
+    right: 22mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    color: #64748b;
+    border-top: 0.5px solid #cbd5e1;
+    padding-top: 3mm;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Cover Page Styling */
+  .cover-container {
+    width: 100%;
+    height: 100%;
+    border: 2px solid #1e293b;
+    padding: 14mm 14mm 10mm 14mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .cover-title-main {
+    font-size: 19pt;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #0f172a;
+    margin-top: 2mm;
+  }
+  .cover-on {
+    font-size: 12pt;
+    font-style: italic;
+    color: #475569;
+    margin: 4mm 0 2mm 0;
+  }
+  .cover-project-title {
+    font-size: 24pt;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: 1px;
+    margin-bottom: 2mm;
+  }
+  .cover-subtitle {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #334155;
+    max-width: 90%;
+    line-height: 1.4;
+  }
+  .cover-ps-box {
+    margin-top: 5mm;
+    font-size: 11pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .cover-ps-sub {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 1mm;
+  }
+  .cover-session {
+    font-size: 11pt;
+    font-weight: 800;
+    margin-top: 2mm;
+    letter-spacing: 0.8px;
+  }
+
+  /* College Logo */
+  .logo-wrapper {
+    margin: 5mm 0 5mm 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .college-logo-img {
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .cover-section-label {
+    font-size: 10pt;
+    color: #475569;
+    font-weight: 500;
+    margin-bottom: 1.5mm;
+  }
+  .cover-student-name {
+    font-size: 17pt;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  .cover-erp-id {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 1mm;
+  }
+  .cover-degree {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 1.5mm;
+  }
+  .cover-guide-name {
+    font-size: 15pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 1mm;
+  }
+
+  .cover-divider {
+    width: 90%;
+    height: 1.5px;
+    background-color: #334155;
+    margin: 5mm 0 4mm 0;
+  }
+  .cover-school-name {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.8px;
+  }
+  .cover-univ-name {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 1.5mm;
+    letter-spacing: 0.5px;
+  }
+  .cover-location {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 1mm;
+    letter-spacing: 0.5px;
+  }
+  .cover-month {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 1.5mm;
+  }
+
+  /* Content Headings */
+  h1.section-title {
+    font-size: 20pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6mm;
+  }
+  h2.sub-title {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 5mm 0 2.5mm 0;
+  }
+  p {
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 3.5mm;
+    text-align: justify;
+  }
+  ul, ol {
+    margin-left: 5mm;
+    margin-bottom: 4mm;
+  }
+  li {
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 2mm;
+  }
+  li strong {
+    color: #0f172a;
+  }
+
+  /* Table styling */
+  table.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4mm 0 5mm 0;
+    font-size: 9.5pt;
+  }
+  table.report-table th, table.report-table td {
+    border: 1px solid #cbd5e1;
+    padding: 7px 10px;
+    text-align: left;
+  }
+  table.report-table th {
+    background-color: #f8fafc;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  table.report-table tr:nth-child(even) {
+    background-color: #fdfdfe;
+  }
+
+  /* Box cards */
+  .box-grid {
+    display: flex;
+    gap: 4mm;
+    margin: 5mm 0;
+  }
+  .box-card {
+    flex: 1;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 4mm;
+    font-size: 9.5pt;
+  }
+  .box-card-header {
+    font-weight: 700;
+    margin-bottom: 2.5mm;
+    color: #0f172a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1.5mm;
+  }
+
+  /* Flowchart Container */
+  .flowchart-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2mm;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: TITLE PAGE ==================== -->
+<div class="page" style="padding: 14mm;">
+  <div class="cover-container">
+    <div class="cover-title-main">PROJECT INTERIM REPORT</div>
+    <div class="cover-on">On</div>
+    <div class="cover-project-title">SALES DATA ANALYZER</div>
+    <div class="cover-subtitle">(Using Python 3, Pandas, CSV, Matplotlib, and Grouping)</div>
+
+    <div class="cover-ps-box">PS No.: 09</div>
+    <div class="cover-ps-sub">Data Analytics and Python Programming Lab</div>
+    <div class="cover-session">SESSION: 2026-27</div>
+
+    <!-- Authentic University Logo Image from PDF -->
+    <div class="logo-wrapper">
+      <img src="college_logo.png" class="college-logo-img" alt="Rungta International Skills University Logo">
+    </div>
+
+    <div style="margin-top: 2mm;">
+      <div class="cover-section-label">Submitted By</div>
+      <div class="cover-student-name">Ayush Prajapati</div>
+      <div class="cover-erp-id">ERP ID: RU-25-10351</div>
+      <div class="cover-degree">Bachelor of Computer Applications (BCA) - 3rd Semester</div>
+    </div>
+
+    <div style="margin-top: 4mm;">
+      <div class="cover-section-label">Under the Guidance of</div>
+      <div class="cover-guide-name">Mr. Sushant Kumar</div>
+    </div>
+
+    <div class="cover-divider"></div>
+
+    <div class="cover-school-name">SCHOOL OF COMPUTER SCIENCE AND ENGINEERING</div>
+    <div class="cover-univ-name">RUNGTA INTERNATIONAL SKILLS UNIVERSITY</div>
+    <div class="cover-location">BHILAI, CHHATTISGARH</div>
+    <div class="cover-month">(November 2026)</div>
+  </div>
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>1</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: INDEX (TABLE OF CONTENTS) ==================== -->
+<div class="page">
+  <h1 class="section-title">Index</h1>
+
+  <table class="report-table" style="margin-top:4mm;">
+    <thead>
+      <tr>
+        <th style="width:10%;">Sr. No.</th>
+        <th>Chapter / Section</th>
+        <th style="width:18%; text-align:center;">Page No.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Title Page</td><td style="text-align:center;">1</td></tr>
+      <tr><td>2</td><td>Index (Table of Contents)</td><td style="text-align:center;">2</td></tr>
+      <tr><td>3</td><td>Abstract</td><td style="text-align:center;">3</td></tr>
+      <tr><td>4</td><td>Introduction</td><td style="text-align:center;">4</td></tr>
+      <tr><td>5</td><td>Objectives</td><td style="text-align:center;">5</td></tr>
+      <tr><td>6</td><td>Scope</td><td style="text-align:center;">6</td></tr>
+      <tr><td>7</td><td>System Requirements</td><td style="text-align:center;">7</td></tr>
+      <tr><td>8</td><td>Methodology</td><td style="text-align:center;">8</td></tr>
+      <tr><td>9</td><td>Flowchart</td><td style="text-align:center;">9</td></tr>
+      <tr><td>10</td><td>Implementation &amp; Modules</td><td style="text-align:center;">10</td></tr>
+      <tr><td>11</td><td>Sample Input / Output</td><td style="text-align:center;">11</td></tr>
+      <tr><td>12</td><td>Test Cases</td><td style="text-align:center;">12</td></tr>
+      <tr><td>13</td><td>Future Scope</td><td style="text-align:center;">13</td></tr>
+      <tr><td>14</td><td>Conclusion</td><td style="text-align:center;">14</td></tr>
+      <tr><td>15</td><td>References</td><td style="text-align:center;">15</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>2</span>
+  </div>
+</div>
+<!-- ==================== PAGE 2: ABSTRACT ==================== -->
+<div class="page">
+  <h1 class="section-title">Abstract</h1>
+
+  <p>The Sales Data Analyzer is a console-based Python application designed to analyze retail sales transaction data from CSV files. The system allows users to clean raw records, compute summary statistics, group sales by product and region, and display the top 5 selling products. Sales records are stored in a Pandas DataFrame during program execution, and the analytical results are visualized using Matplotlib charts.</p>
+
+  <p>The project is an applied Data Analytics and Python programming application built using Python 3. It applies Pandas for structured tabular data manipulation, data cleansing routines for detecting and skipping invalid rows, groupby operations for categorical aggregation, and Matplotlib for plotting graphical distributions.</p>
+
+  <p>Each transaction record includes a date, product name, geographic region, quantity sold, and total sale amount. The program validates numeric fields so that amounts and quantities must be valid numbers, and it filters out corrupted rows (such as text values in numeric fields) as well as duplicate rows. The scope is intentionally clean, modular, and suitable for a college-level project submission.</p>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>3</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: INTRODUCTION ==================== -->
+<div class="page">
+  <h1 class="section-title">Introduction</h1>
+
+  <p>Sales transaction analysis is a fundamental real-world application where information about commercial transactions, item quantities, and regional performance must be maintained and evaluated accurately. A basic business analytics system should allow raw sales data to be ingested and should support common operations such as calculating total turnover, grouping sales by categories, and visualizing trends.</p>
+
+  <p>This project demonstrates these operations on a practical scale through a menu-driven Python console application. The user selects an option from the menu, enters the dataset path, and the program performs the requested data processing operation.</p>
+
+  <h2 class="sub-title">The application is organized into the following parts:</h2>
+  <ul>
+    <li><strong>Data Ingestion & Cleaning</strong> – reads raw CSV records, detects headers, skips invalid rows, and eliminates duplicate entries.</li>
+    <li><strong>Summary Analytics</strong> – computes aggregate metrics including total revenue, transaction counts, and total units sold.</li>
+    <li><strong>Product & Region Grouping</strong> – utilizes Pandas <code>groupby()</code> to aggregate sales performance across products and regions.</li>
+    <li><strong>Top Products Leaderboard</strong> – sorts and displays the top 5 best-selling products by quantity and revenue.</li>
+    <li><strong>Data Visualization</strong> – generates and displays publication-quality Matplotlib bar charts and line charts.</li>
+  </ul>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>4</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: OBJECTIVES ==================== -->
+<div class="page">
+  <h1 class="section-title">Objectives</h1>
+
+  <ul>
+    <li>Develop a console-based sales data analysis application in Python 3.</li>
+    <li>Implement automated CSV ingestion capable of handling files with or without column headers.</li>
+    <li>Perform data cleaning to detect and skip non-numeric and invalid data with informative row-level alerts.</li>
+    <li>Eliminate redundant duplicate transactions to preserve financial calculation accuracy.</li>
+    <li>Utilize Pandas <code>groupby()</code> to calculate product-wise and region-wise revenue.</li>
+    <li>Display the top 5 selling products sorted in descending order of volume.</li>
+    <li>Plot at least two visual charts (Bar chart for regional sales and Line chart for chronological trend).</li>
+    <li>Understand the time complexity and memory characteristics of DataFrame filtering and aggregation operations.</li>
+  </ul>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>5</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: SCOPE ==================== -->
+<div class="page">
+  <h1 class="section-title">Scope</h1>
+
+  <p>The first version of the project is limited to the following:</p>
+
+  <ul>
+    <li>A menu-driven console application.</li>
+    <li>Ingestion and processing of comma-separated values (CSV) sales datasets.</li>
+    <li>Automated calculation of total turnover, transaction count, and units sold.</li>
+    <li>Storage of records in an optimized Pandas DataFrame during execution.</li>
+    <li>Multi-dimensional categorical grouping by product and sales region.</li>
+    <li>Top 5 best-selling products leaderboard generation.</li>
+    <li>Basic validation for corrupted non-numeric amounts and duplicate rows.</li>
+    <li>Visualization of regional performance (Bar Chart) and temporal sales momentum (Line Chart).</li>
+  </ul>
+
+  <p>A relational database, cloud storage, web-based graphical user interface, user authentication, online payment integration, and predictive machine learning models are not required for this project version.</p>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>6</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: SYSTEM REQUIREMENTS ==================== -->
+<div class="page">
+  <h1 class="section-title">System Requirements</h1>
+
+  <h2 class="sub-title">Hardware</h2>
+  <p>Computer/laptop with 4 GB RAM (recommended).</p>
+  <ul>
+    <li>Processor: Dual-core 1.5 GHz or higher.</li>
+    <li>Storage: Minimum 250 MB free disk space for Python runtime and dataset files.</li>
+    <li>Display: Minimum 1024 x 768 resolution for viewing Matplotlib graphical plots.</li>
+  </ul>
+
+  <h2 class="sub-title">Software</h2>
+  <ul>
+    <li>Python 3.8 or higher (Python 3.12+ recommended).</li>
+    <li>Libraries: Pandas, Matplotlib.</li>
+    <li>Editor/IDE: Visual Studio Code, Antigravity, PyCharm, or IDLE.</li>
+    <li>Operating System: Windows 10/11, Ubuntu/Linux, or macOS.</li>
+    <li>Console / Terminal.</li>
+  </ul>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>7</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 7: METHODOLOGY ==================== -->
+<div class="page">
+  <h1 class="section-title">Methodology</h1>
+
+  <p>The system works step-by-step as follows:</p>
+
+  <ol>
+    <li>The application starts and loads the sales CSV dataset from the specified file path.</li>
+    <li>The system inspects the file header and instantiates an in-memory Pandas DataFrame.</li>
+    <li>For data validation, each row is checked to ensure that Amount and Quantity are valid numeric values.</li>
+    <li>If an invalid value is detected (e.g. non-numeric string <code>'abc'</code>), an informative skip notice is displayed and the row is excluded.</li>
+    <li>Duplicate rows containing identical records are detected and removed to prevent skewed calculations.</li>
+    <li>The user selects an operation from the interactive console menu (Options 1 to 5).</li>
+    <li>For Option 1 (Summary), the program aggregates gross revenue, transaction counts, and total units sold.</li>
+    <li>For Option 2 (Grouping), the program applies <code>groupby()</code> across Product and Region, then displays the Region-wise bar chart.</li>
+    <li>For Option 3 (Top Products), the program sorts items by total units sold and presents the top 5 leaderboard.</li>
+    <li>For Option 4 (Sales Trend), the program computes daily revenue totals and renders a chronological line plot, terminating cleanly on Option 5.</li>
+  </ol>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>8</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 8: FLOWCHART (100% COMPLETE & BEAUTIFULLY FORMATTED) ==================== -->
+<div class="page">
+  <h1 class="section-title">Flowchart</h1>
+
+  <p>The flowchart below illustrates the complete execution lifecycle of the Sales Data Analyzer application. It depicts data ingestion, row validation, error handling, interactive menu dispatching, report rendering, and clean program termination.</p>
+
+<div class="flowchart-wrapper">
+    <svg width="600" height="820" viewBox="0 0 600 820" fill="none" xmlns="http://www.w3.org/2000/svg" style="font-family:'Segoe UI',Arial,sans-serif;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 Z" fill="#1E293B"/>
+        </marker>
+      </defs>
+      <!-- LEGEND -->
+      <rect x="430" y="10" width="160" height="105" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+      <text x="510" y="28" font-size="9" font-weight="700" text-anchor="middle" fill="#0F172A">LEGEND</text>
+      <rect x="440" y="34" width="38" height="14" rx="7" fill="#0EA5E9" stroke="#0284C7" stroke-width="1"/>
+      <text x="484" y="45" font-size="8" fill="#334155">Start / End</text>
+      <rect x="440" y="54" width="38" height="14" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+      <text x="484" y="65" font-size="8" fill="#334155">Process</text>
+      <polygon points="440,74 478,74 474,88 436,88" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+      <text x="484" y="84" font-size="8" fill="#334155">Input / Output</text>
+      <polygon points="449,97 459,103 449,109 439,103" fill="#FEF9C3" stroke="#CA8A04" stroke-width="1"/>
+      <text x="484" y="107" font-size="8" fill="#334155">Decision</text>
+      <!-- TITLE -->
+      <text x="210" y="13" font-size="11" font-weight="800" text-anchor="middle" fill="#0F172A">PROGRAM FLOW: Sales Data Analyzer</text>
+      <!-- 1. START -->
+      <rect x="155" y="20" width="110" height="30" rx="15" fill="#0EA5E9" stroke="#0284C7" stroke-width="1.5"/>
+      <text x="210" y="40" font-size="12" font-weight="700" text-anchor="middle" fill="#FFFFFF">START</text>
+      <line x1="210" y1="50" x2="210" y2="72" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 2. Load CSV -->
+      <rect x="100" y="74" width="220" height="36" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="210" y="89" font-size="9" font-weight="700" text-anchor="middle" fill="#1E3A8A">Load sales.csv via pd.read_csv()</text>
+      <text x="210" y="103" font-size="7.5" text-anchor="middle" fill="#1E3A8A">(Read all columns as raw strings)</text>
+      <line x1="210" y1="110" x2="210" y2="132" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 3. Validate -->
+      <rect x="90" y="134" width="240" height="36" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="210" y="149" font-size="9" font-weight="700" text-anchor="middle" fill="#1E3A8A">Row-by-Row Data Validation</text>
+      <text x="210" y="163" font-size="7.5" text-anchor="middle" fill="#1E3A8A">(Amount&#8594;float, Qty&#8594;int, skip duplicates)</text>
+      <line x1="210" y1="170" x2="210" y2="192" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 4. Decision: Invalid Row? -->
+      <polygon points="210,194 275,218 210,242 145,218" fill="#FEF9C3" stroke="#CA8A04" stroke-width="1.5"/>
+      <text x="210" y="214" font-size="8.5" font-weight="700" text-anchor="middle" fill="#78350F">Invalid Row</text>
+      <text x="210" y="226" font-size="8.5" font-weight="700" text-anchor="middle" fill="#78350F">Found?</text>
+      <!-- YES right -->
+      <line x1="275" y1="218" x2="350" y2="218" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="307" y="212" font-size="8" font-weight="700" fill="#DC2626">YES</text>
+      <rect x="350" y="202" width="140" height="32" rx="4" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+      <text x="420" y="215" font-size="8.5" font-weight="700" text-anchor="middle" fill="#991B1B">Print Skip Notice</text>
+      <text x="420" y="227" font-size="7.5" text-anchor="middle" fill="#991B1B">("Row skipped: invalid data")</text>
+      <line x1="420" y1="234" x2="420" y2="250" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="420" y1="250" x2="210" y2="250" stroke="#1E293B" stroke-width="1.2" marker-end="url(#arr)"/>
+      <!-- NO down -->
+      <line x1="210" y1="242" x2="210" y2="265" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="217" y="258" font-size="8" font-weight="700" fill="#16A34A">NO</text>
+      <!-- 5. Build DataFrame -->
+      <rect x="100" y="267" width="220" height="30" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="210" y="280" font-size="9" font-weight="700" text-anchor="middle" fill="#1E3A8A">Build Clean DataFrame</text>
+      <text x="210" y="291" font-size="7.5" text-anchor="middle" fill="#1E3A8A">(All valid rows collected)</text>
+      <line x1="210" y1="297" x2="210" y2="319" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 6. Display Menu -->
+      <rect x="85" y="321" width="250" height="34" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="210" y="336" font-size="9" font-weight="700" text-anchor="middle" fill="#1E3A8A">Display Main Menu</text>
+      <text x="210" y="349" font-size="7.5" text-anchor="middle" fill="#1E3A8A">1.Summary 2.Group 3.Top5 4.Trend 5.Exit</text>
+      <line x1="210" y1="355" x2="210" y2="377" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 7. User Input parallelogram -->
+      <polygon points="120,379 300,379 285,401 105,401" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="205" y="394" font-size="9" font-weight="700" text-anchor="middle" fill="#4C1D95">Enter Choice (1-5)</text>
+      <line x1="205" y1="401" x2="205" y2="423" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 8. Decision: Valid Choice? -->
+      <polygon points="205,425 270,448 205,471 140,448" fill="#FEF9C3" stroke="#CA8A04" stroke-width="1.5"/>
+      <text x="205" y="444" font-size="8.5" font-weight="700" text-anchor="middle" fill="#78350F">Valid</text>
+      <text x="205" y="456" font-size="8.5" font-weight="700" text-anchor="middle" fill="#78350F">Choice?</text>
+      <!-- NO loop back -->
+      <line x1="140" y1="448" x2="50" y2="448" stroke="#1E293B" stroke-width="1.5"/>
+      <text x="85" y="442" font-size="7.5" font-weight="700" fill="#DC2626">NO</text>
+      <line x1="50" y1="448" x2="50" y2="338" stroke="#1E293B" stroke-width="1.5"/>
+      <line x1="50" y1="338" x2="85" y2="338" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- YES down -->
+      <line x1="205" y1="471" x2="205" y2="492" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="212" y="485" font-size="8" font-weight="700" fill="#16A34A">YES</text>
+      <!-- DISPATCH BAR -->
+      <line x1="30" y1="500" x2="430" y2="500" stroke="#1E293B" stroke-width="1.5"/>
+      <line x1="205" y1="492" x2="205" y2="500" stroke="#1E293B" stroke-width="1.5"/>
+      <!-- Option 1 -->
+      <line x1="45" y1="500" x2="45" y2="514" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="5" y="516" width="80" height="66" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="45" y="530" font-size="8" font-weight="700" text-anchor="middle" fill="#14532D">Choice=1</text>
+      <text x="45" y="542" font-size="7" font-weight="700" text-anchor="middle" fill="#14532D">Summary</text>
+      <text x="45" y="554" font-size="6.5" text-anchor="middle" fill="#14532D">Total Revenue</text>
+      <text x="45" y="565" font-size="6.5" text-anchor="middle" fill="#14532D">Txn Count</text>
+      <text x="45" y="576" font-size="6.5" text-anchor="middle" fill="#14532D">Units Sold</text>
+      <!-- Option 2 -->
+      <line x1="140" y1="500" x2="140" y2="514" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="95" y="516" width="90" height="66" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="140" y="530" font-size="8" font-weight="700" text-anchor="middle" fill="#14532D">Choice=2</text>
+      <text x="140" y="542" font-size="7" font-weight="700" text-anchor="middle" fill="#14532D">Group Analysis</text>
+      <text x="140" y="554" font-size="6.5" text-anchor="middle" fill="#14532D">By Product</text>
+      <text x="140" y="565" font-size="6.5" text-anchor="middle" fill="#14532D">By Region</text>
+      <text x="140" y="576" font-size="6.5" text-anchor="middle" fill="#14532D">Bar Chart</text>
+      <!-- Option 3 -->
+      <line x1="240" y1="500" x2="240" y2="514" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="197" y="516" width="86" height="66" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="240" y="530" font-size="8" font-weight="700" text-anchor="middle" fill="#14532D">Choice=3</text>
+      <text x="240" y="542" font-size="7" font-weight="700" text-anchor="middle" fill="#14532D">Top 5 Products</text>
+      <text x="240" y="554" font-size="6.5" text-anchor="middle" fill="#14532D">Aggregate Qty</text>
+      <text x="240" y="565" font-size="6.5" text-anchor="middle" fill="#14532D">Sort Desc</text>
+      <text x="240" y="576" font-size="6.5" text-anchor="middle" fill="#14532D">Leaderboard</text>
+      <!-- Option 4 -->
+      <line x1="340" y1="500" x2="340" y2="514" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="295" y="516" width="90" height="66" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="340" y="530" font-size="8" font-weight="700" text-anchor="middle" fill="#14532D">Choice=4</text>
+      <text x="340" y="542" font-size="7" font-weight="700" text-anchor="middle" fill="#14532D">Sales Trend</text>
+      <text x="340" y="554" font-size="6.5" text-anchor="middle" fill="#14532D">Group by Date</text>
+      <text x="340" y="565" font-size="6.5" text-anchor="middle" fill="#14532D">Daily Revenue</text>
+      <text x="340" y="576" font-size="6.5" text-anchor="middle" fill="#14532D">Line Chart</text>
+      <!-- Option 5 -->
+      <line x1="430" y1="500" x2="430" y2="514" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="385" y="516" width="90" height="66" rx="4" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.2"/>
+      <text x="430" y="530" font-size="8" font-weight="700" text-anchor="middle" fill="#991B1B">Choice=5</text>
+      <text x="430" y="542" font-size="7" font-weight="700" text-anchor="middle" fill="#991B1B">Exit</text>
+      <text x="430" y="554" font-size="6.5" text-anchor="middle" fill="#991B1B">Break Loop</text>
+      <text x="430" y="565" font-size="6.5" text-anchor="middle" fill="#991B1B">Print Goodbye!</text>
+      <!-- MERGE Options 1-4 -> Display Result -->
+      <line x1="45" y1="582" x2="45" y2="610" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="140" y1="582" x2="140" y2="610" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="240" y1="582" x2="240" y2="610" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="340" y1="582" x2="340" y2="610" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="45" y1="610" x2="340" y2="610" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="192" y1="610" x2="192" y2="628" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="90" y="630" width="210" height="34" rx="4" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="195" y="645" font-size="9" font-weight="700" text-anchor="middle" fill="#1E3A8A">Display Result / Chart</text>
+      <text x="195" y="657" font-size="7.5" text-anchor="middle" fill="#1E3A8A">(Console output or Matplotlib window)</text>
+      <!-- Loop back to menu -->
+      <line x1="90" y1="647" x2="20" y2="647" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="20" y1="647" x2="20" y2="338" stroke="#1E293B" stroke-width="1.2"/>
+      <line x1="20" y1="338" x2="85" y2="338" stroke="#1E293B" stroke-width="1.2" marker-end="url(#arr)"/>
+      <text x="10" y="510" font-size="7" font-weight="700" fill="#0284C7" writing-mode="tb">Back to Menu</text>
+      <!-- EXIT -> END -->
+      <line x1="430" y1="582" x2="430" y2="654" stroke="#1E293B" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="385" y="656" width="90" height="30" rx="15" fill="#0EA5E9" stroke="#0284C7" stroke-width="1.5"/>
+      <text x="430" y="676" font-size="12" font-weight="700" text-anchor="middle" fill="#FFFFFF">END</text>
+    </svg>
+  </div>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>9</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 9: IMPLEMENTATION & MODULES ==================== -->
+<div class="page">
+  <h1 class="section-title">Implementation</h1>
+
+  <p>The system is implemented as a single-file Python 3 application (<code>sales_analyzer.py</code>) using a clean, procedural, function-based architecture. This eliminates unnecessary object-oriented overhead while ensuring optimal readability for academic evaluation and viva presentation.</p>
+
+  <h2 class="sub-title">Core Functions Breakdown</h2>
+  <ul>
+    <li><code>load_data(file_name)</code>: Reads the CSV dataset using <code>pd.read_csv()</code> as raw strings. Validates each row: converts <code>Amount</code> to float and <code>Quantity</code> to integer using <code>try...except ValueError</code>. If non-numeric text (such as <code>'abc'</code>) is found, it prints an alert and skips that row. It also uses a Python <code>set</code> of tuples to eliminate duplicate transactions.</li>
+    <li><code>show_summary(df)</code>: Calculates gross revenue via <code>df['Amount'].sum()</code>, total transactions via <code>len(df)</code>, and total units via <code>df['Quantity'].sum()</code>. Identifies the top-selling product using <code>.idxmax()</code>.</li>
+    <li><code>show_grouping(df)</code>: Applies Pandas <code>groupby()</code> across Product and Region, displays pipe-separated summaries, and plots an interactive Matplotlib bar chart (<code>Region-wise Sales</code>).</li>
+    <li><code>show_top_5(df)</code>: Groups transactions by product, sorts in descending order of total units sold, and displays the top 5 product rankings.</li>
+    <li><code>show_trend(df)</code>: Groups revenue by date and plots a chronological line chart (<code>Daily Sales Trend</code>).</li>
+    <li><code>main()</code>: Implements a clean <code>while True:</code> loop providing a 5-option interactive console menu.</li>
+  </ul>
+
+  <h2 class="sub-title">Time Complexity Analysis</h2>
+  <p>Let N be the number of rows in the CSV file, and K be the unique product count:</p>
+  <ul>
+    <li><strong>CSV Parsing & Cleaning:</strong> O(N) because each record is inspected and validated in a single pass.</li>
+    <li><strong>Summary Calculation:</strong> O(N) single-pass aggregation over cleaned numerical columns.</li>
+    <li><strong>Product & Region Grouping:</strong> O(N) using optimized hash-based grouping in Pandas.</li>
+    <li><strong>Top 5 Product Ranking:</strong> O(K log K) where K is the number of distinct products.</li>
+    <li><strong>Chart Plotting:</strong> O(K) for the categorical bar chart, and O(D) for the chronological line chart.</li>
+  </ul>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>10</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 10: SAMPLE INPUT/OUTPUT ==================== -->
+<div class="page">
+  <h1 class="section-title">Sample Input/Output</h1>
+
+  <p>An illustrative sample of transaction records from <code>sales.csv</code> used for demonstration:</p>
+
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Region</th>
+        <th>Quantity</th>
+        <th>Amount (₹)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>2026-08-01</td><td>Laptop</td><td>North</td><td>2</td><td>100000</td></tr>
+      <tr><td>2026-08-02</td><td>Mouse</td><td>South</td><td>10</td><td>5000</td></tr>
+      <tr><td>2026-08-03</td><td>Laptop</td><td>South</td><td>1</td><td>50000</td></tr>
+      <tr><td>2026-08-04</td><td>Keyboard</td><td>North</td><td>5</td><td>7500</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Input:</strong> Select Option 3 (Top 5 Best-Selling Products)<br>
+  <strong>Output:</strong> Leaderboard sorted in descending order of units sold:</p>
+
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Product</th>
+        <th>Units Sold</th>
+        <th>Total Revenue (₹)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Mouse</td><td>16</td><td>8,000</td></tr>
+      <tr><td>2</td><td>Keyboard</td><td>9</td><td>13,500</td></tr>
+      <tr><td>3</td><td>Headphones</td><td>8</td><td>16,000</td></tr>
+      <tr><td>4</td><td>Laptop</td><td>5</td><td>250,000</td></tr>
+      <tr><td>5</td><td>Monitor</td><td>5</td><td>75,000</td></tr>
+    </tbody>
+  </table>
+
+  <p>The system displays appropriate feedback during normal operations and alerts the user when corrupted records are encountered:</p>
+
+  <div class="box-grid">
+    <div class="box-card">
+      <div class="box-card-header">Successful Operation (Summary)</div>
+      <p style="margin: 0; font-family: monospace;">Total Revenue: 155000 | Transactions: 3 | Units sold: 13</p>
+    </div>
+    <div class="box-card">
+      <div class="box-card-header">Invalid Operation (Data Sanitization)</div>
+      <p style="margin: 0; font-family: monospace; color: #b91c1c;">Row 2 skipped: invalid Amount 'abc'<br>Total Revenue: 150000 | Transactions: 2</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>11</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 12: TEST CASES ==================== -->
+<div class="page">
+  <h1 class="section-title">Test Cases</h1>
+
+  <p>The following four test cases validate the correctness of the Sales Data Analyzer against all required scenarios from the problem statement (PS No. 09).</p>
+
+  <h2 class="sub-title">Test Case 1 — Normal Input</h2>
+  <table class="report-table">
+    <thead><tr><th style="width:28%;">Field</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Input</strong></td><td>sales.csv with 3 rows; Menu Option 1 (Summary)</td></tr>
+      <tr><td><strong>Data</strong></td><td>2026-08-01,Laptop,North,2,100000 &nbsp;|&nbsp; 2026-08-02,Mouse,South,10,5000 &nbsp;|&nbsp; 2026-08-03,Laptop,South,1,50000</td></tr>
+      <tr><td><strong>Expected Output</strong></td><td>Total Revenue: 155000 &nbsp;|&nbsp; Transactions: 3 &nbsp;|&nbsp; Units Sold: 13</td></tr>
+      <tr><td><strong>Result</strong></td><td style="color:#166534; font-weight:700;">&#10003; PASS</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub-title">Test Case 2 — Boundary / Minimum Input</h2>
+  <table class="report-table">
+    <thead><tr><th style="width:28%;">Field</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Input</strong></td><td>sales.csv with 1 row only; Menu Option 1 (Summary)</td></tr>
+      <tr><td><strong>Data</strong></td><td>2026-08-01,Mouse,North,1,500</td></tr>
+      <tr><td><strong>Expected Output</strong></td><td>Total Revenue: 500 &nbsp;|&nbsp; Transactions: 1 &nbsp;|&nbsp; Top Product: Mouse</td></tr>
+      <tr><td><strong>Result</strong></td><td style="color:#166534; font-weight:700;">&#10003; PASS</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub-title">Test Case 3 — Invalid Input (Data Sanitization)</h2>
+  <table class="report-table">
+    <thead><tr><th style="width:28%;">Field</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Input</strong></td><td>Row 2 has Amount = 'abc' (non-numeric); Menu Option 1 (Summary)</td></tr>
+      <tr><td><strong>Data</strong></td><td>2026-08-01,Laptop,North,2,100000 &nbsp;|&nbsp; 2026-08-02,Mouse,South,10,<strong style="color:#b91c1c;">abc</strong> &nbsp;|&nbsp; 2026-08-03,Laptop,South,1,50000</td></tr>
+      <tr><td><strong>Expected Output</strong></td><td style="color:#b91c1c;">Row 2 skipped: invalid Amount 'abc'<br>Total Revenue: 150000 | Transactions: 2</td></tr>
+      <tr><td><strong>Result</strong></td><td style="color:#166534; font-weight:700;">&#10003; PASS</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub-title">Test Case 4 — Group by Product &amp; Region</h2>
+  <table class="report-table">
+    <thead><tr><th style="width:28%;">Field</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Input</strong></td><td>Same CSV as Test Case 1; Menu Option 2 (Group Analysis)</td></tr>
+      <tr><td><strong>Expected Output</strong></td><td>Laptop: 150000 &nbsp;|&nbsp; Mouse: 5000<br>North: 100000 &nbsp;|&nbsp; South: 55000<br>Bar chart 'Region-wise Sales' displayed</td></tr>
+      <tr><td><strong>Result</strong></td><td style="color:#166534; font-weight:700;">&#10003; PASS</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>12</span>
+  </div>
+</div>
+<!-- ==================== PAGE 11: FUTURE SCOPE ==================== -->
+<div class="page">
+  <h1 class="section-title">Future Scope</h1>
+
+  <p>The following are possible later extensions. They represent planned future work and are not part of the current console version:</p>
+
+  <ul>
+    <li><strong>Relational Database Integration</strong> – connect the system to an SQLite or MySQL database for persistent transaction logging.</li>
+    <li><strong>User Authentication & Roles</strong> – add role-based logins (Admin, Store Manager, Cashier) with password protection.</li>
+    <li><strong>Web-Based Interactive Dashboard</strong> – build a web user interface using Flask or Streamlit with real-time controls.</li>
+    <li><strong>Automated Export to Multiple Formats</strong> – generate automated sales summaries in Excel (.xlsx) and printable PDF formats.</li>
+    <li><strong>Machine Learning Forecasting</strong> – integrate predictive models (linear regression, ARIMA) to forecast future product demand.</li>
+    <li><strong>Point of Sale (POS) Integration</strong> – support automated real-time transaction ingestion directly from barcode scanners.</li>
+  </ul>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>13</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 12: CONCLUSION ==================== -->
+<div class="page">
+  <h1 class="section-title">Conclusion</h1>
+
+  <p>The Sales Data Analyzer demonstrates how core Python programming concepts and foundational Data Analytics tools can be used to solve practical commercial transaction analysis problems. The project uses the Pandas library to represent tabular records, automated filtering logic to cleanse corrupted entries, groupby operations to perform categorical financial aggregations, and Matplotlib to visualize sales trends.</p>
+
+  <p>The application successfully performs data ingestion, data sanitization, summary metrics calculation, product and region-wise grouping, and top 5 product ranking while handling edge cases such as single-row inputs and invalid text amounts. The project is simple to understand, modular in design, and readily extensible in the future with the advanced capabilities listed under Future Scope.</p>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>14</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 13: REFERENCES ==================== -->
+<div class="page">
+  <h1 class="section-title">References</h1>
+
+  <h2 class="sub-title">Book</h2>
+  <p>[1] W. McKinney, <em>Python for Data Analysis: Data Wrangling with pandas, NumPy, and Jupyter</em>, 3rd ed. Sebastopol, CA, USA: O'Reilly Media, 2022.</p>
+  <p>[2] E. Matthes, <em>Python Crash Course: A Hands-On, Project-Based Introduction to Programming</em>, 3rd ed. San Francisco, CA, USA: No Starch Press, 2023.</p>
+
+  <h2 class="sub-title">Website & Official Documentation</h2>
+  <p>[3] Python Software Foundation, "Python 3 Documentation," Python.org. [Online]. Available: https://docs.python.org/3/</p>
+  <p>[4] Pandas Development Team, "Pandas User Guide & API Reference," PyData.org. [Online]. Available: https://pandas.pydata.org/docs/</p>
+  <p>[5] Matplotlib Development Team, "Matplotlib: Visualization with Python," Matplotlib.org. [Online]. Available: https://matplotlib.org/</p>
+
+  <h2 class="sub-title">Source Code Repository</h2>
+  <p>[6] A. Prajapati, "Sales Data Analyzer Repository," GitHub. [Online]. Available: https://github.com/ayushprajapati-lang/Sales_data_analyzer</p>
+
+  <div class="page-footer">
+    <span>SALES DATA ANALYZER</span>
+    <span>15</span>
+  </div>
+</div>
+
+</body>
+</html>
